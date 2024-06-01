@@ -38,8 +38,8 @@ class PhysicsEngine:
         self.physics_controller = physics_controller
 
         # Motors
-        self.drive_left = wpilib.simulation.PWMSim(robot.drive_left.getChannel())
-        self.drive_right = wpilib.simulation.PWMSim(robot.drive_right.getChannel())
+        self.drive_left = wpilib.simulation.PWMSim(robot.drive_left_motor.getChannel())
+        self.drive_right = wpilib.simulation.PWMSim(robot.drive_right_motor.getChannel())
 
         # Gyro
         self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
@@ -85,4 +85,4 @@ class PhysicsEngine:
         self.gyro.setAngle(-pose.rotation().degrees())
 
         # update position (use tm_diff so the rate is constant)
-        self.position += self.motor.getSpeed() * tm_diff * 3
+        # self.position += self.motor.getSpeed() * tm_diff * 3
