@@ -1,1 +1,3 @@
 simgui*
+**/__pycache__/
+*.wpilog
