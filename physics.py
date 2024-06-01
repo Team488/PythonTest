@@ -44,8 +44,6 @@ class PhysicsEngine:
         # Gyro
         self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
 
-        self.position = 0
-
         # Change these parameters to fit your robot!
         bumper_width = 3.25 * units.inch
 
@@ -76,13 +74,11 @@ class PhysicsEngine:
         l_motor_speed = self.drive_left.getSpeed()
         r_motor_speed = self.drive_right.getSpeed()
 
-        transform = self.drivetrain.calculate(l_motor_speed, r_motor_speed, tm_diff)
+        # the TankModel model assumes right motor is inverted (so negative is forward)
+        transform = self.drivetrain.calculate(l_motor_speed, -r_motor_speed, tm_diff)
         pose = self.physics_controller.move_robot(transform)
 
         # Update the gyro simulation
         # -> FRC gyros are positive clockwise, but the returned pose is positive
         #    counter-clockwise
         self.gyro.setAngle(-pose.rotation().degrees())
-
-        # update position (use tm_diff so the rate is constant)
-        # self.position += self.motor.getSpeed() * tm_diff * 3

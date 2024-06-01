@@ -1,13 +1,15 @@
 import wpilib
 import wpilib.drive
 import magicbot
+from networktables import NetworkTables
+
+
 
 class MyRobot(magicbot.MagicRobot):
 
     def createObjects(self):
         '''Create motors and stuff here'''
-        self.lstick = wpilib.Joystick(0)
-        self.rstick = wpilib.Joystick(1)
+        self.drive_controller = wpilib.XboxController(0)
 
         self.drive_left_motor = wpilib.Talon(1)
         self.drive_right_motor = wpilib.Talon(2)
@@ -15,11 +17,16 @@ class MyRobot(magicbot.MagicRobot):
 
         self.gyro = wpilib.AnalogGyro(1)
 
+        # NetworkTables.initialize()
+        # self.sd = NetworkTables.getTable("SmartDashboard")
+
     def teleopInit(self):
         '''Called when teleop starts; optional'''
         pass
 
     def teleopPeriodic(self):
-        self.drive.arcadeDrive(-self.lstick.getY(), self.lstick.getX())
+        self.drive.arcadeDrive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
 
-        wpilib.SmartDashboard.putNumber("Gyro", self.gyro.getAngle())
+    def robotPeriodic(self):
+        '''Called in all modes'''
+        pass
