@@ -1,9 +1,6 @@
 import wpilib
 import wpilib.drive
 import magicbot
-from networktables import NetworkTables
-
-
 
 class MyRobot(magicbot.MagicRobot):
 
@@ -17,9 +14,6 @@ class MyRobot(magicbot.MagicRobot):
 
         self.gyro = wpilib.AnalogGyro(1)
 
-        # NetworkTables.initialize()
-        # self.sd = NetworkTables.getTable("SmartDashboard")
-
     def teleopInit(self):
         '''Called when teleop starts; optional'''
         pass
@@ -28,5 +22,5 @@ class MyRobot(magicbot.MagicRobot):
         self.drive.arcadeDrive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
 
     def robotPeriodic(self):
-        '''Called in all modes'''
+        '''Called in all modes, good for logging kinds of things'''
         pass
