@@ -1,3 +1,4 @@
+networktables.json
 simgui*
 **/__pycache__/
 *.wpilog

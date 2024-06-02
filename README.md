@@ -22,3 +22,10 @@ https://robotpy.readthedocs.io/projects/pyfrc/en/stable/
 
 # simulation
 python -m robotpy sim
+
+# Teams using python
+
+## Magicbot
+
+https://github.com/thedropbears/pycrescendo/blob/main/robot.py
+They have some vscode examples working

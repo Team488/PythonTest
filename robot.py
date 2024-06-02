@@ -2,7 +2,10 @@ import wpilib
 import wpilib.drive
 import magicbot
 
+from components.drive import Drive
+
 class MyRobot(magicbot.MagicRobot):
+    drive: Drive
 
     def createObjects(self):
         '''Create motors and stuff here'''
@@ -10,7 +13,6 @@ class MyRobot(magicbot.MagicRobot):
 
         self.drive_left_motor = wpilib.Talon(1)
         self.drive_right_motor = wpilib.Talon(2)
-        self.drive = wpilib.drive.DifferentialDrive(self.drive_left_motor, self.drive_right_motor)
 
         self.gyro = wpilib.AnalogGyro(1)
 
@@ -19,7 +21,7 @@ class MyRobot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self):
-        self.drive.arcadeDrive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
+        self.drive.tank_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightY())
 
     def robotPeriodic(self):
         '''Called in all modes, good for logging kinds of things'''
