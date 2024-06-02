@@ -22,7 +22,7 @@ class DriveForward(StatefulAutonomous):
 
     @timed_state(duration=1, next_state="stop")
     def drive_forward(self):
-        self.drive.tank_drive(self.drive_speed, self.drive_speed)
+        self.drive.arcade_drive(self.drive_speed, 0)
 
     @state()  # Remove or modify this to add additional states to this class.
     def stop(self):

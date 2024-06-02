@@ -21,7 +21,7 @@ class MyRobot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self):
-        self.drive.tank_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightY())
+        self.drive.arcade_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
 
     def robotPeriodic(self):
         '''Called in all modes, good for logging kinds of things'''
