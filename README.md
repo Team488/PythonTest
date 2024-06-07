@@ -25,7 +25,12 @@ python -m robotpy sim
 
 # Teams using python
 
-## Magicbot
+## Magicbot style robots (as opposed to Command)
+
+### Dropbears
 
 https://github.com/thedropbears/pycrescendo/blob/main/robot.py
 They have some vscode examples working
+
+https://github.com/thedropbears/pycrescendo/blob/main/components/chassis.py
+Here's the swerve drive code
