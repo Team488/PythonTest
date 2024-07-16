@@ -1,6 +1,6 @@
 from rev import CANSparkMax
 
-class SwerveDriving:
+class DriveModule:
     motor: CANSparkMax
 
     _target_speed: float = 0

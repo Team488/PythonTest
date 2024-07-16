@@ -38,8 +38,8 @@ class PhysicsEngine:
         self.physics_controller = physics_controller
 
         # Motors
-        self.drive_left = wpilib.simulation.PWMSim(robot.drive_left_motor.getChannel())
-        self.drive_right = wpilib.simulation.PWMSim(robot.drive_right_motor.getChannel())
+        # self.drive_left = wpilib.simulation.PWMSim(robot.drive_left_motor.getChannel())
+        # self.drive_right = wpilib.simulation.PWMSim(robot.drive_right_motor.getChannel())
 
         # Gyro
         self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
@@ -71,14 +71,14 @@ class PhysicsEngine:
         """
 
         # Simulate the drivetrain
-        l_motor_speed = self.drive_left.getSpeed()
-        r_motor_speed = self.drive_right.getSpeed()
+        # l_motor_speed = self.drive_left.getSpeed()
+        # r_motor_speed = self.drive_right.getSpeed()
 
         # the TankModel model assumes right motor is inverted (so negative is forward)
-        transform = self.drivetrain.calculate(l_motor_speed, -r_motor_speed, tm_diff)
-        pose = self.physics_controller.move_robot(transform)
+        # transform = self.drivetrain.calculate(l_motor_speed, -r_motor_speed, tm_diff)
+        # pose = self.physics_controller.move_robot(transform)
 
         # Update the gyro simulation
         # -> FRC gyros are positive clockwise, but the returned pose is positive
         #    counter-clockwise
-        self.gyro.setAngle(-pose.rotation().degrees())
+        # self.gyro.setAngle(-pose.rotation().degrees())

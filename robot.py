@@ -2,17 +2,23 @@ import wpilib
 import wpilib.drive
 import magicbot
 
+from rev import CANSparkMax
+
 from components.drive import Drive
+from components.swerve.drive_module import DriveModule
+from components.swerve.swerve_module import SwerveModule
 
 class MyRobot(magicbot.MagicRobot):
+    # Injected components, these will be automatically built by MagicBot
     drive: Drive
+    front_left_swerve_module_drive_module: DriveModule
+    front_left_swerve_module: SwerveModule
 
     def createObjects(self):
-        '''Create motors and stuff here'''
+        '''Create motors and stuff here, they'll be passed to injected modules that ask for them by name'''
         self.drive_controller = wpilib.XboxController(0)
 
-        self.drive_left_motor = wpilib.Talon(1)
-        self.drive_right_motor = wpilib.Talon(2)
+        self.front_left_swerve_module_drive_module_motor = CANSparkMax(1, CANSparkMax.MotorType.kBrushless)
 
         self.gyro = wpilib.AnalogGyro(1)
 
