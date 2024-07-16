@@ -4,8 +4,7 @@ from components.swerve.steering_module import SteeringModule
 
 class SwerveModule:
     drive_module: DriveModule
-    # start with just Drive for simplicity
-    # steering: SteeringModule
+    steering_module: SteeringModule
 
     def execute(self):
         # TODO: apply drive and steering intents to submodules

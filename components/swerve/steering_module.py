@@ -1,4 +1,3 @@
-
 from phoenix6.hardware import CANcoder
 from rev import CANSparkMax
 from wpimath.controller import PIDController
@@ -19,4 +18,4 @@ class SteeringModule:
         self._target_angle = target_angle
 
     def execute(self):
-        self.motor.set(self._pid.calculate(self.encoder.getAbsolutePosition(), self._target_angle))
+        self.motor.set(self._pid.calculate(self.encoder.get_absolute_position().value, self._target_angle))
