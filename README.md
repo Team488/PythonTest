@@ -27,5 +27,12 @@ python -m robotpy sim
 
 ## Magicbot
 
+### Dropbears
 https://github.com/thedropbears/pycrescendo/blob/main/robot.py
 They have some vscode examples working
+
+## Command Bot
+
+### 1757 WestwoodRobotics
+
+https://github.com/1757WestwoodRobotics/2024-Crescendo
