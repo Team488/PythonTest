@@ -1,3 +1,4 @@
+import navx
 import wpilib
 import wpilib.drive
 import magicbot
@@ -46,7 +47,7 @@ class MyRobot(magicbot.MagicRobot):
             steering_encoder_can_id=12
         )
 
-
+        self.imu = navx.AHRS.create_spi()
         self.gyro = wpilib.AnalogGyro(1)
 
     def teleopInit(self):

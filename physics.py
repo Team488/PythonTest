@@ -16,15 +16,11 @@
 #
 
 import math
-
-import wpilib.simulation
 from wpimath.kinematics import (
     SwerveDrive4Kinematics,
 )
-
+from wpilib.simulation import DCMotorSim, SimDeviceSim
 from pyfrc.physics.core import PhysicsInterface
-from pyfrc.physics import motor_cfgs, tankmodel
-from pyfrc.physics.units import units
 
 import typing
 
@@ -44,7 +40,8 @@ class PhysicsEngine:
 
         self.kinematics: SwerveDrive4Kinematics = robot.drive.kinematics
         self.swerve_modules = robot.drive.modules
-        
+        self.imu = SimDeviceSim("navX-Sensor", 4)
+        self.imu_yaw = self.imu.getDouble("Yaw")
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -60,17 +57,7 @@ class PhysicsEngine:
             tuple((module._swerve_state for module in self.swerve_modules))
         )
 
+        # Update the yaw of the robot based on the rotation of the robot
+        self.imu_yaw.set(self.imu_yaw.get() - math.degrees(speeds.omega * tm_diff))
+
         self.physics_controller.drive(speeds, tm_diff)
-
-        # Simulate the drivetrain
-        # l_motor_speed = self.drive_left.getSpeed()
-        # r_motor_speed = self.drive_right.getSpeed()
-
-        # the TankModel model assumes right motor is inverted (so negative is forward)
-        # transform = self.drivetrain.calculate(l_motor_speed, -r_motor_speed, tm_diff)
-        # pose = self.physics_controller.move_robot(transform)
-
-        # Update the gyro simulation
-        # -> FRC gyros are positive clockwise, but the returned pose is positive
-        #    counter-clockwise
-        # self.gyro.setAngle(-pose.rotation().degrees())
