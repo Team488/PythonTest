@@ -2,28 +2,50 @@ import wpilib
 import wpilib.drive
 import magicbot
 
-from rev import CANSparkMax
-from phoenix6.hardware import CANcoder
+from wpimath.geometry import Translation2d
 
-from components.drive import Drive
-from components.swerve.drive_module import DriveModule
-from components.swerve.steering_module import SteeringModule
-from components.swerve.swerve_module import SwerveModule
+from components.swerve.drive import Drive
+from components.swerve.swerve_module import SwerveModule, SwerveModuleConfig
 
 class MyRobot(magicbot.MagicRobot):
     # Injected components, these will be automatically built by MagicBot
     drive: Drive
-    front_left_swerve_module_drive_module: DriveModule
-    front_left_swerve_module_steering_module: SteeringModule
     front_left_swerve_module: SwerveModule
+    front_right_swerve_module: SwerveModule
+    back_left_swerve_module: SwerveModule
+    back_right_swerve_module: SwerveModule
+
+
 
     def createObjects(self):
         '''Create motors and stuff here, they'll be passed to injected modules that ask for them by name'''
         self.drive_controller = wpilib.XboxController(0)
 
-        self.front_left_swerve_module_drive_module_motor = CANSparkMax(1, CANSparkMax.MotorType.kBrushless)
-        self.front_left_swerve_module_steering_module_motor = CANSparkMax(2, CANSparkMax.MotorType.kBrushless)
-        self.front_left_swerve_module_steering_module_encoder = CANcoder(3)
+        self.front_left_swerve_module_config = SwerveModuleConfig(
+            position=Translation2d(0.5, 0.5),
+            drive_can_id=1,
+            steering_can_id=2,
+            steering_encoder_can_id=3
+        )
+        self.front_right_swerve_module_config = SwerveModuleConfig(
+            position=Translation2d(-0.5, 0.5),
+            drive_can_id=4,
+            steering_can_id=5,
+            steering_encoder_can_id=6
+        )
+        self.back_left_swerve_module_config = SwerveModuleConfig(
+            position=Translation2d(0.5, -0.5),
+            drive_can_id=7,
+            steering_can_id=8,
+            steering_encoder_can_id=9
+        )
+        self.back_right_swerve_module_config = SwerveModuleConfig(
+            position=Translation2d(-0.5, -0.5),
+            drive_can_id=10,
+            steering_can_id=11,
+            steering_encoder_can_id=12
+        )
+
 
         self.gyro = wpilib.AnalogGyro(1)
 
@@ -32,8 +54,9 @@ class MyRobot(magicbot.MagicRobot):
         pass
 
     def teleopPeriodic(self):
-        self.drive.arcade_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
-
+        # drive robot with joysticks
+        self.drive.robot_relative_drive(-self.drive_controller.getLeftX(), -self.drive_controller.getLeftY(), -self.drive_controller.getRightX())
+       
     def robotPeriodic(self):
         '''Called in all modes, good for logging kinds of things'''
         pass

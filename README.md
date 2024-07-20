@@ -9,6 +9,12 @@ this lib is the basic core stuff
 `python -m robotpy init`
 `python -m robotpy sync`
 
+To run all tests (done with pytest under the covers and a bunch of fixtures to make it easy to write robot tests):
+`python -m robotpy test`
+
+To run a single test:
+`python -m robotpy test -- -k robot_builds_test`
+
 To deploy to robot:
 `python -m robotpy deploy`
 
