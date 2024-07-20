@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
-from wpimath.geometry import Translation2d, Rotation2d, Pose2d
+import magicbot
+from wpimath.geometry import Translation2d, Rotation2d
 from wpimath.kinematics import (
     SwerveModuleState,
 )
@@ -22,6 +23,7 @@ class SwerveModule:
 
 
     _drive_module: DriveModule
+    _swerve_state = magicbot.will_reset_to(SwerveModuleState(0, Rotation2d(0)))
 
     def setup(self):
         self._drive_module = DriveModule(self.config.drive_can_id)
@@ -32,9 +34,11 @@ class SwerveModule:
         return self.config.position
 
     def set_swerve_state(self, state: SwerveModuleState):
-        self._drive_module.set_target_speed(state.speed)
-        # self.steering_module.set_target_angle(state.angle)
+        self._swerve_state = state
+        self._drive_module.set_target_speed(self._swerve_state.speed)
 
     def execute(self):
-        # TODO: apply drive and steering intents to submodules
-        pass
+        # these sub components are true top level components so we need to call execute() 
+        # on them to make sure they apply their outputs
+        self._drive_module.execute()
+        # self.steering_module.set_target_angle(state.angle)

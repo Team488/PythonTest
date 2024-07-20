@@ -22,7 +22,7 @@ class DriveForward(StatefulAutonomous):
 
     @timed_state(duration=1, next_state="stop")
     def drive_forward(self):
-        self.drive.robot_relative_drive(0, 1.0, 0)
+        self.drive.robot_relative_drive(0, self.drive_speed, 0)
 
     @state()  # Remove or modify this to add additional states to this class.
     def stop(self):
