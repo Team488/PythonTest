@@ -15,7 +15,12 @@
 # of your robot code without too much extra effort.
 #
 
+import math
+
 import wpilib.simulation
+from wpimath.kinematics import (
+    SwerveDrive4Kinematics,
+)
 
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics import motor_cfgs, tankmodel
@@ -37,28 +42,9 @@ class PhysicsEngine:
     def __init__(self, physics_controller: PhysicsInterface, robot: "MyRobot"):
         self.physics_controller = physics_controller
 
-        # Motors
-        # self.drive_left = wpilib.simulation.PWMSim(robot.drive_left_motor.getChannel())
-        # self.drive_right = wpilib.simulation.PWMSim(robot.drive_right_motor.getChannel())
-
-        # Gyro
-        self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
-
-        # Change these parameters to fit your robot!
-        bumper_width = 3.25 * units.inch
-
-        # fmt: off
-        self.drivetrain = tankmodel.TankModel.theory(
-            motor_cfgs.MOTOR_CFG_CIM,           # motor configuration
-            110 * units.lbs,                    # robot mass
-            10.71,                              # drivetrain gear ratio
-            2,                                  # motors per side
-            22 * units.inch,                    # robot wheelbase
-            23 * units.inch + bumper_width * 2, # robot width
-            32 * units.inch + bumper_width * 2, # robot length
-            6 * units.inch,                     # wheel diameter
-        )
-        # fmt: on
+        self.kinematics: SwerveDrive4Kinematics = robot.drive.kinematics
+        self.swerve_modules = robot.drive.modules
+        
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -69,6 +55,12 @@ class PhysicsEngine:
         :param tm_diff: The amount of time that has passed since the last
                         time that this function was called
         """
+
+        speeds = self.kinematics.toChassisSpeeds(
+            tuple((module._swerve_state for module in self.swerve_modules))
+        )
+
+        self.physics_controller.drive(speeds, tm_diff)
 
         # Simulate the drivetrain
         # l_motor_speed = self.drive_left.getSpeed()
