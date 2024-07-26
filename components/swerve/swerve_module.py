@@ -6,8 +6,8 @@ from wpimath.kinematics import (
     SwerveModuleState,
 )
 
-from components.swerve.drive_module import DriveModule
-from components.swerve.steering_module import SteeringModule
+from components.swerve.drive_wheel import DriveWheel
+from components.swerve.steering import SteeringMechanism
 
 @dataclass
 class SwerveModuleConfig:
@@ -22,11 +22,11 @@ class SwerveModule:
     config: SwerveModuleConfig
 
 
-    _drive_module: DriveModule
+    _drive_module: DriveWheel
     _swerve_state = magicbot.will_reset_to(SwerveModuleState(0, Rotation2d(0)))
 
     def setup(self):
-        self._drive_module = DriveModule(self.config.drive_can_id)
+        self._drive_module = DriveWheel(self.config.drive_can_id)
         # self.steering_module = SteeringModule(self.config.steering_can_id, self.config.steering_encoder_can_id)
 
     @property

@@ -2,7 +2,7 @@ from phoenix6.hardware import CANcoder
 from rev import CANSparkMax
 from wpimath.controller import PIDController
 
-class SteeringModule:
+class SteeringMechanism:
     encoder: CANcoder
     motor: CANSparkMax
 
