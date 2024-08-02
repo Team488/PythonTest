@@ -39,12 +39,12 @@ class SteeringMechanism:
         self.motor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(False)
 
     def get_absolute_encoder_position_degrees(self):
-        return Rotation2d.fromDegrees(self.encoder.get_absolute_position() * 360)
+        return Rotation2d.fromDegrees(self.encoder.get_absolute_position().value * 360)
 
-    def set_target_angle(self, target_angle):
-        self._target_angle = Rotation2d.fromDegrees(target_angle)
+    def set_target_angle(self, target_angle: Rotation2d):
+        self._target_angle = target_angle
 
     def execute(self):
-        error_in_degrees = self._target_angle - self.get_absolute_encoder_position_degrees()
-        power = self._pid.calculate(error_in_degrees)
+        error_in_degrees = (self._target_angle - self.get_absolute_encoder_position_degrees()).degrees()
+        power = self._pid.calculate(error_in_degrees, 0)
         self.motor.set(power)

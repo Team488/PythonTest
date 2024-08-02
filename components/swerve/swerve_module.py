@@ -28,7 +28,7 @@ class SwerveModule:
 
     def setup(self):
         self._drive_module = DriveWheel(self.config.drive_can_id)
-        self.steering_module = SteeringMechanism(self.config.steering_can_id, self.config.steering_encoder_can_id)
+        self._steering_module = SteeringMechanism(self.config.steering_can_id, self.config.steering_encoder_can_id)
 
     @property
     def position_on_robot(self) -> Translation2d:
@@ -37,9 +37,10 @@ class SwerveModule:
     def set_swerve_state(self, state: SwerveModuleState):
         self._swerve_state = state
         self._drive_module.set_target_speed(self._swerve_state.speed)
+        self._steering_module.set_target_angle(self._swerve_state.angle)
 
     def execute(self):
         # these sub components are true top level components so we need to call execute() 
         # on them to make sure they apply their outputs
         self._drive_module.execute()
-        # self.steering_module.set_target_angle(state.angle)
+        self._steering_module.execute()
