@@ -10,13 +10,14 @@ class DriveWheel:
 
     def __init__(self, can_id):
         self.motor = CANSparkMax(can_id, CANSparkMax.MotorType.kBrushless)
-        pid = self.motor.getPIDController()
-        pid.setP(0.00001)
-        pid.setI(0.000001)
-        pid.setIZone(400)
-        pid.setD(0.0)
-        pid.setFF(0.00015)
-        pid.setOutputRange(-1, 1)
+
+        self._motor_pid = self.motor.getPIDController()
+        self._motor_pid.setP(0.00001)
+        self._motor_pid.setI(0.000001)
+        self._motor_pid.setIZone(400)
+        self._motor_pid.setD(0.0)
+        self._motor_pid.setFF(0.00015)
+        self._motor_pid.setOutputRange(-1, 1)
         # TODO: set status frame timing
         self.motor.setSmartCurrentLimit(45)
         self.motor.setSecondaryCurrentLimit(80)
@@ -41,5 +42,5 @@ class DriveWheel:
             self.motor.set(0)
         else:
             target_speed_rpm = self._target_speed / DriveWheel._meters_per_rotation * 60.0
-            self.motor.getPIDController().setReference(target_speed_rpm, CANSparkLowLevel.ControlType.kVelocity, 0)
+            self._motor_pid.setReference(target_speed_rpm, CANSparkLowLevel.ControlType.kVelocity, 0)
         

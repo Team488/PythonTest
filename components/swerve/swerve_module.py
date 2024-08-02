@@ -23,11 +23,12 @@ class SwerveModule:
 
 
     _drive_module: DriveWheel
+    _steering_module: SteeringMechanism
     _swerve_state = magicbot.will_reset_to(SwerveModuleState(0, Rotation2d(0)))
 
     def setup(self):
         self._drive_module = DriveWheel(self.config.drive_can_id)
-        # self.steering_module = SteeringModule(self.config.steering_can_id, self.config.steering_encoder_can_id)
+        self.steering_module = SteeringMechanism(self.config.steering_can_id, self.config.steering_encoder_can_id)
 
     @property
     def position_on_robot(self) -> Translation2d:
