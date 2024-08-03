@@ -24,27 +24,27 @@ class MyRobot(magicbot.MagicRobot):
 
         self.front_left_swerve_module_config = SwerveModuleConfig(
             position=Translation2d(0.5, 0.5),
-            drive_can_id=1,
-            steering_can_id=2,
-            steering_encoder_can_id=3
+            drive_can_id=39,
+            steering_can_id=38,
+            steering_encoder_can_id=54
         )
         self.front_right_swerve_module_config = SwerveModuleConfig(
             position=Translation2d(-0.5, 0.5),
-            drive_can_id=4,
-            steering_can_id=5,
-            steering_encoder_can_id=6
+            drive_can_id=31,
+            steering_can_id=30,
+            steering_encoder_can_id=53
         )
         self.back_left_swerve_module_config = SwerveModuleConfig(
             position=Translation2d(0.5, -0.5),
-            drive_can_id=7,
-            steering_can_id=8,
-            steering_encoder_can_id=9
+            drive_can_id=20,
+            steering_can_id=21,
+            steering_encoder_can_id=52
         )
         self.back_right_swerve_module_config = SwerveModuleConfig(
             position=Translation2d(-0.5, -0.5),
-            drive_can_id=10,
-            steering_can_id=11,
-            steering_encoder_can_id=12
+            drive_can_id=29,
+            steering_can_id=28,
+            steering_encoder_can_id=51
         )
 
         self.imu = navx.AHRS.create_spi()
