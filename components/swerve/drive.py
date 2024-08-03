@@ -7,6 +7,7 @@ from wpimath.kinematics import (
     SwerveModuleState,
 )
 
+
 class Drive:
     front_left_swerve_module: SwerveModule
     front_right_swerve_module: SwerveModule
@@ -15,6 +16,10 @@ class Drive:
 
     chassis_speeds = magicbot.will_reset_to(ChassisSpeeds(0, 0, 0))
     
+    max_translation_speed = magicbot.tunable(2.0)
+    single_module_control = magicbot.tunable(False)
+    single_module = magicbot.tunable(0)
+
     def setup(self):
         self.modules = [
             self.front_left_swerve_module,
@@ -35,18 +40,28 @@ class Drive:
             "measured", SwerveModuleState
         ).publish()
 
-    def robot_relative_drive(self, x_speed: float, y_speed: float, rot_speed: float):
-        self.chassis_speeds = ChassisSpeeds(x_speed, y_speed, rot_speed)
+    def robot_relative_drive(self, x_intent: float, y_intent: float, rot_speed: float):
+        # Scale drive speed by the max we'd like to be able to go
+        self.chassis_speeds = ChassisSpeeds(
+            x_intent * self.max_translation_speed,
+            y_intent * self.max_translation_speed,
+            rot_speed,
+        )
 
     def stop(self):
         self.chassis_speeds = ChassisSpeeds(0, 0, 0)
 
     def execute(self):
         desired_states = self.kinematics.toSwerveModuleStates(self.chassis_speeds)
-        for state, module in zip(desired_states, self.modules):
-            module.set_target_swerve_state(state)
-        # module = 1
-        # self.modules[module].set_target_swerve_state(desired_states[module])
+        if self.single_module_control:
+            self.modules[self.single_module].set_target_swerve_state(desired_states[self.single_module])
+        else:
+            for state, module in zip(desired_states, self.modules):
+                module.set_target_swerve_state(state)
 
-        self.setpoints_publisher.set([module.get_target_swerve_state() for module in self.modules])
-        self.measurements_publisher.set([module.get_current_swerve_state() for module in self.modules])
+        self.setpoints_publisher.set(
+            [module.get_target_swerve_state() for module in self.modules]
+        )
+        self.measurements_publisher.set(
+            [module.get_current_swerve_state() for module in self.modules]
+        )
