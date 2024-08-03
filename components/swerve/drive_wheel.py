@@ -4,11 +4,12 @@ from rev import CANSparkMax, SparkLimitSwitch, CANSparkLowLevel
 class DriveWheel:
     motor: CANSparkMax
 
-    _target_speed: float = magicbot.will_reset_to(0.0)
+    _target_speed: float
     _meters_per_rotation = 0.0532676904732978
     _min_velocity_to_engage_pid = 0.01
 
     def __init__(self, can_id):
+        self._target_speed = 0
         self.motor = CANSparkMax(can_id, CANSparkMax.MotorType.kBrushless)
 
         self._motor_pid = self.motor.getPIDController()

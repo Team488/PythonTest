@@ -31,14 +31,14 @@ class MyRobot(magicbot.MagicRobot):
         )
         self.front_right_swerve_module_config = SwerveModuleConfig(
             prefix="front_right",
-            position=Translation2d(-0.5, 0.5),
+            position=Translation2d(0.5, -0.5),
             drive_can_id=29,
             steering_can_id=28,
             steering_encoder_can_id=52
         )
         self.back_left_swerve_module_config = SwerveModuleConfig(
             prefix="back_left",
-            position=Translation2d(0.5, -0.5),
+            position=Translation2d(-0.5, 0.5),
             drive_can_id=38,
             steering_can_id=39,
             steering_encoder_can_id=53

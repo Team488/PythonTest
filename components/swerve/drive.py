@@ -45,6 +45,8 @@ class Drive:
         desired_states = self.kinematics.toSwerveModuleStates(self.chassis_speeds)
         for state, module in zip(desired_states, self.modules):
             module.set_target_swerve_state(state)
+        # module = 1
+        # self.modules[module].set_target_swerve_state(desired_states[module])
 
         self.setpoints_publisher.set([module.get_target_swerve_state() for module in self.modules])
         self.measurements_publisher.set([module.get_current_swerve_state() for module in self.modules])
