@@ -23,24 +23,28 @@ class MyRobot(magicbot.MagicRobot):
         self.drive_controller = wpilib.XboxController(0)
 
         self.front_left_swerve_module_config = SwerveModuleConfig(
+            prefix="front_left",
             position=Translation2d(0.5, 0.5),
             drive_can_id=31,
             steering_can_id=30,
             steering_encoder_can_id=51
         )
         self.front_right_swerve_module_config = SwerveModuleConfig(
+            prefix="front_right",
             position=Translation2d(-0.5, 0.5),
             drive_can_id=29,
             steering_can_id=28,
             steering_encoder_can_id=52
         )
         self.back_left_swerve_module_config = SwerveModuleConfig(
+            prefix="back_left",
             position=Translation2d(0.5, -0.5),
             drive_can_id=38,
             steering_can_id=39,
             steering_encoder_can_id=53
         )
         self.back_right_swerve_module_config = SwerveModuleConfig(
+            prefix="back_right",
             position=Translation2d(-0.5, -0.5),
             drive_can_id=21,
             steering_can_id=20,

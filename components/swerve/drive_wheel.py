@@ -27,11 +27,13 @@ class DriveWheel:
         self.motor.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(False)
         self.motor.getReverseLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen).enableLimitSwitch(False)
 
+        self.motor_encoder = self.motor.getEncoder()
+
     def get_current_speed(self):
-        return self.motor.getEncoder().getVelocity() * DriveWheel._meters_per_rotation / 60.0 # convert to m/s from rpm
+        return self.motor_encoder.getVelocity() * DriveWheel._meters_per_rotation / 60.0 # convert to m/s from rpm
 
     def get_current_position(self):
-        return self.motor.getEncoder().getPosition() * DriveWheel._meters_per_rotation
+        return self.motor_encoder.getPosition() * DriveWheel._meters_per_rotation
 
     def set_target_speed(self, target_speed):
         self._target_speed = target_speed

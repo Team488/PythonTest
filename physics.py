@@ -54,7 +54,8 @@ class PhysicsEngine:
         """
 
         speeds = self.kinematics.toChassisSpeeds(
-            tuple((module._swerve_state for module in self.swerve_modules))
+            # TODO: this should get current swerve state, but we don't have that simulated yet
+            tuple((module.get_target_swerve_state() for module in self.swerve_modules))
         )
 
         # Update the yaw of the robot based on the rotation of the robot
