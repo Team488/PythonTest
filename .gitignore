@@ -2,3 +2,5 @@ networktables.json
 simgui*
 **/__pycache__/
 *.wpilog
+
+**/ctre_sim/
