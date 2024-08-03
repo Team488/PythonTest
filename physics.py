@@ -15,11 +15,12 @@
 # of your robot code without too much extra effort.
 #
 
-import wpilib.simulation
-
+import math
+from wpimath.kinematics import (
+    SwerveDrive4Kinematics,
+)
+from wpilib.simulation import DCMotorSim, SimDeviceSim
 from pyfrc.physics.core import PhysicsInterface
-from pyfrc.physics import motor_cfgs, tankmodel
-from pyfrc.physics.units import units
 
 import typing
 
@@ -37,28 +38,10 @@ class PhysicsEngine:
     def __init__(self, physics_controller: PhysicsInterface, robot: "MyRobot"):
         self.physics_controller = physics_controller
 
-        # Motors
-        self.drive_left = wpilib.simulation.PWMSim(robot.drive_left_motor.getChannel())
-        self.drive_right = wpilib.simulation.PWMSim(robot.drive_right_motor.getChannel())
-
-        # Gyro
-        self.gyro = wpilib.simulation.AnalogGyroSim(robot.gyro)
-
-        # Change these parameters to fit your robot!
-        bumper_width = 3.25 * units.inch
-
-        # fmt: off
-        self.drivetrain = tankmodel.TankModel.theory(
-            motor_cfgs.MOTOR_CFG_CIM,           # motor configuration
-            110 * units.lbs,                    # robot mass
-            10.71,                              # drivetrain gear ratio
-            2,                                  # motors per side
-            22 * units.inch,                    # robot wheelbase
-            23 * units.inch + bumper_width * 2, # robot width
-            32 * units.inch + bumper_width * 2, # robot length
-            6 * units.inch,                     # wheel diameter
-        )
-        # fmt: on
+        self.kinematics: SwerveDrive4Kinematics = robot.drive.kinematics
+        self.swerve_modules = robot.drive.modules
+        self.imu = SimDeviceSim("navX-Sensor", 4)
+        self.imu_yaw = self.imu.getDouble("Yaw")
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
@@ -70,15 +53,12 @@ class PhysicsEngine:
                         time that this function was called
         """
 
-        # Simulate the drivetrain
-        l_motor_speed = self.drive_left.getSpeed()
-        r_motor_speed = self.drive_right.getSpeed()
+        speeds = self.kinematics.toChassisSpeeds(
+            # TODO: this should get current swerve state, but we don't have that simulated yet
+            tuple((module.get_target_swerve_state() for module in self.swerve_modules))
+        )
 
-        # the TankModel model assumes right motor is inverted (so negative is forward)
-        transform = self.drivetrain.calculate(l_motor_speed, -r_motor_speed, tm_diff)
-        pose = self.physics_controller.move_robot(transform)
+        # Update the yaw of the robot based on the rotation of the robot
+        self.imu_yaw.set(self.imu_yaw.get() - math.degrees(speeds.omega * tm_diff))
 
-        # Update the gyro simulation
-        # -> FRC gyros are positive clockwise, but the returned pose is positive
-        #    counter-clockwise
-        self.gyro.setAngle(-pose.rotation().degrees())
+        self.physics_controller.drive(speeds, tm_diff)

@@ -1,7 +1,7 @@
 import wpilib
 from robotpy_ext.autonomous import StatefulAutonomous, state, timed_state
 
-from components.drive import Drive
+from components.swerve.drive import Drive
 
 
 class DriveForward(StatefulAutonomous):
@@ -22,8 +22,8 @@ class DriveForward(StatefulAutonomous):
 
     @timed_state(duration=1, next_state="stop")
     def drive_forward(self):
-        self.drive.arcade_drive(self.drive_speed, 0)
+        self.drive.robot_relative_drive(0, self.drive_speed, 0)
 
     @state()  # Remove or modify this to add additional states to this class.
     def stop(self):
-        self.drive.stop()
+        self.drive.robot_relative_drive(0, 0, 0)
