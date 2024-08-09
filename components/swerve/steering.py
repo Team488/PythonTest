@@ -74,7 +74,7 @@ class SteeringMechanism:
         ).publish()
         self.error_publisher = module_states_table.getDoubleTopic("error").publish()
 
-    def get_absolute_encoder_position_degrees(self) -> Rotation2d:
+    def get_absolute_encoder_position(self) -> Rotation2d:
         return Rotation2d.fromDegrees(self.encoder.get_absolute_position().value * 360)
 
     def set_target_angle(self, target_angle: Rotation2d):
@@ -82,7 +82,7 @@ class SteeringMechanism:
 
     def execute(self):
         error_in_degrees = compute_error(
-            self._target_angle, self.get_absolute_encoder_position_degrees()
+            self._target_angle, self.get_absolute_encoder_position()
         )
         scaled_error = error_in_degrees / 90.0
         if scaled_error < -1:
@@ -95,7 +95,7 @@ class SteeringMechanism:
         self.scaled_error_publisher.set(scaled_error)
         self.error_publisher.set(error_in_degrees)
         self.current_angle_publisher.set(
-            self.get_absolute_encoder_position_degrees().degrees()
+            self.get_absolute_encoder_position().degrees()
         )
         self.target_angle_publisher.set(self._target_angle.degrees())
         self.current_power_publisher.set(power)
