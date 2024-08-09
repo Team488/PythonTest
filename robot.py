@@ -52,8 +52,9 @@ class MyRobot(magicbot.MagicRobot):
         )
 
         self.imu = navx.AHRS.create_spi()
-        self.gyro = wpilib.AnalogGyro(1)
-
+        self.imu.zeroYaw()
+        self.imu.resetDisplacement()
+        
     def teleopInit(self):
         '''Called when teleop starts; optional'''
         pass

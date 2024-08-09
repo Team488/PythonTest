@@ -6,6 +6,8 @@ from wpimath.kinematics import (
     ChassisSpeeds,
     SwerveModuleState,
 )
+from wpimath.geometry import Translation2d, Rotation2d, Pose2d
+from wpimath.estimator import SwerveDrive4PoseEstimator
 
 
 class Drive:
@@ -65,3 +67,11 @@ class Drive:
         self.measurements_publisher.set(
             [module.get_current_swerve_state() for module in self.modules]
         )
+
+    def get_pose(self) -> Pose2d:
+        """Get the current location of the robot relative to ???"""
+        return self.estimator.getEstimatedPosition()
+
+    def get_rotation(self) -> Rotation2d:
+        """Get the current heading of the robot."""
+        return self.get_pose().rotation()
