@@ -1,4 +1,3 @@
-import magicbot
 from rev import CANSparkMax, SparkLimitSwitch, CANSparkLowLevel
 
 class DriveWheel:
@@ -34,6 +33,7 @@ class DriveWheel:
         return self.motor_encoder.getVelocity() * DriveWheel._meters_per_rotation / 60.0 # convert to m/s from rpm
 
     def get_current_position(self):
+        # AS: What's this used for?
         return self.motor_encoder.getPosition() * DriveWheel._meters_per_rotation
 
     def set_target_speed(self, target_speed):
