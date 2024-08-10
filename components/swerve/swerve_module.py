@@ -13,7 +13,8 @@ from components.swerve.steering import SteeringMechanism
 
 @dataclass
 class SwerveModuleConfig:
-    # where is the module on the robot relative to the center of the robot?
+    # where is the module on the robot relative to the center of the robot
+    # remember x positive is robot 'forward' and positive y is robot 'left'
     position: Translation2d
     drive_can_id: int
     steering_can_id: int
@@ -24,7 +25,7 @@ class SwerveModule:
     # Injected values
     config: SwerveModuleConfig
 
-
+    # Private values not injected
     _drive_module: DriveWheel
     _steering_module: SteeringMechanism
     _target_swerve_state = magicbot.will_reset_to(SwerveModuleState(0, Rotation2d(0)))

@@ -22,38 +22,44 @@ class MyRobot(magicbot.MagicRobot):
         '''Create motors and stuff here, they'll be passed to injected modules that ask for them by name'''
         self.drive_controller = wpilib.XboxController(0)
 
-        self.front_left_swerve_module_config = SwerveModuleConfig(
+        self.create_swerve_config("2023")
+
+        self.imu = navx.AHRS.create_spi()
+        self.imu.zeroYaw()
+        self.imu.resetDisplacement()
+
+    def create_swerve_config(self, robot: str):
+        if robot == "2023":
+            self.front_left_swerve_module_config = SwerveModuleConfig(
             prefix="front_left",
             position=Translation2d(0.5, 0.5),
             drive_can_id=31,
             steering_can_id=30,
             steering_encoder_can_id=51
-        )
-        self.front_right_swerve_module_config = SwerveModuleConfig(
-            prefix="front_right",
-            position=Translation2d(0.5, -0.5),
-            drive_can_id=29,
-            steering_can_id=28,
-            steering_encoder_can_id=52
-        )
-        self.back_left_swerve_module_config = SwerveModuleConfig(
-            prefix="back_left",
-            position=Translation2d(-0.5, 0.5),
-            drive_can_id=38,
-            steering_can_id=39,
-            steering_encoder_can_id=53
-        )
-        self.back_right_swerve_module_config = SwerveModuleConfig(
-            prefix="back_right",
-            position=Translation2d(-0.5, -0.5),
-            drive_can_id=21,
-            steering_can_id=20,
-            steering_encoder_can_id=54
-        )
-
-        self.imu = navx.AHRS.create_spi()
-        self.imu.zeroYaw()
-        self.imu.resetDisplacement()
+            )
+            self.front_right_swerve_module_config = SwerveModuleConfig(
+                prefix="front_right",
+                position=Translation2d(0.5, -0.5),
+                drive_can_id=29,
+                steering_can_id=28,
+                steering_encoder_can_id=52
+            )
+            self.back_left_swerve_module_config = SwerveModuleConfig(
+                prefix="back_left",
+                position=Translation2d(-0.5, 0.5),
+                drive_can_id=38,
+                steering_can_id=39,
+                steering_encoder_can_id=53
+            )
+            self.back_right_swerve_module_config = SwerveModuleConfig(
+                prefix="back_right",
+                position=Translation2d(-0.5, -0.5),
+                drive_can_id=21,
+                steering_can_id=20,
+                steering_encoder_can_id=54
+            )
+        else:
+            raise ValueError("Invalid robot: " + robot)
         
     def teleopInit(self):
         '''Called when teleop starts; optional'''
