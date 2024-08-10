@@ -74,6 +74,9 @@ class Drive:
             vx, vy, omega, current_heading
         )
 
+    def reset_heading(self):
+        self.imu.zeroYaw()
+
     def stop(self):
         self.chassis_speeds = ChassisSpeeds(0, 0, 0)
 

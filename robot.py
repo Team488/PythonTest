@@ -67,8 +67,11 @@ class MyRobot(magicbot.MagicRobot):
 
     def teleopPeriodic(self):
         # drive robot with joysticks
-        self.drive.robot_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())
-       
+        #self.drive.robot_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())
+        self.drive.field_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())  
+        if self.drive_controller.getStartButtonPressed():
+            self.drive.reset_heading()
+        
     def robotPeriodic(self):
         '''Called in all modes, good for logging kinds of things'''
         pass
