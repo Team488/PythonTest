@@ -31,6 +31,8 @@ python -m robotpy sim
 
 # Teams using python
 
+https://robotpy.github.io/community/
+
 ## Magicbot style robots (as opposed to Command)
 
 ### Dropbears
@@ -46,3 +48,9 @@ Here's the swerve drive code
 ### 1757 WestwoodRobotics
 
 https://github.com/1757WestwoodRobotics/2024-Crescendo
+
+
+### 1721
+They are using yaml files for config in an interesting way
+
+https://github.com/FRC-1721/1721-RapidReact/blob/main/rio/subsystems/drivetrain.py
