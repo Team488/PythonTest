@@ -9,7 +9,7 @@ from wpimath.kinematics import (
     SwerveModuleState,
     SwerveModulePosition,
 )
-from wpimath.geometry import Translation2d, Rotation2d, Pose2d
+from wpimath.geometry import Rotation2d, Pose2d
 from wpimath.estimator import SwerveDrive4PoseEstimator
 
 
