@@ -11,6 +11,9 @@ from wpimath.kinematics import (
 )
 from wpimath.geometry import Rotation2d, Pose2d
 from wpimath.estimator import SwerveDrive4PoseEstimator
+from wpimath.controller import PIDController
+
+from utils.rotation import compute_rotational_error_degrees
 
 
 class Drive:
@@ -38,6 +41,7 @@ class Drive:
         )
         # TODO: set initial pose from a setting based on red vs blue
         initial_pose = Pose2d(0, 0, Rotation2d(0))
+        self.target_heading = self.imu.getRotation2d()
         self.estimator = SwerveDrive4PoseEstimator(
             self.kinematics,
             self.imu.getRotation2d(),
@@ -49,6 +53,8 @@ class Drive:
         )
         self.field = wpilib.Field2d()
         self.field_obj = self.field.getObject("fused_pose")
+
+        self.heading_pid = self._pid = PIDController(0.2, 0.0, 0.0)
 
         nt = ntcore.NetworkTableInstance.getDefault().getTable("/components/drive")
         module_states_table = nt.getSubTable("module_states")
@@ -67,9 +73,15 @@ class Drive:
             rot_speed,
         )
 
-    def field_relative_drive(self, vx: float, vy: float, omega: float) -> None:
+    def field_relative_drive(self, vx: float, vy: float, heading_delta: float) -> None:
         """Field oriented drive commands"""
+        if abs(heading_delta) > 0.1:
+            self.target_heading += Rotation2d.fromDegrees(heading_delta * 10)
         current_heading = self.get_rotation()
+        heading_error = compute_rotational_error_degrees(current_heading, self.target_heading)
+        # PID to our target heading
+        omega = self.heading_pid.calculate(heading_error)
+
         self.chassis_speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
             vx, vy, omega, current_heading
         )
