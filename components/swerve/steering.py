@@ -1,18 +1,11 @@
-from networktables import NetworkTables
 import ntcore
 from phoenix6.hardware import CANcoder
 from rev import CANSparkMax, SparkLimitSwitch
 from wpimath.controller import PIDController
 from wpimath.geometry import Rotation2d
-from wpimath import angleModulus
 
+from utils.rotation import compute_rotational_error_degrees
 
-def compute_error(current_angle: Rotation2d, target_angle: Rotation2d) -> float:
-    error_in_degrees = Rotation2d(
-        angleModulus((target_angle - current_angle).radians())
-    ).degrees()
-
-    return error_in_degrees
 
 
 class SteeringMechanism:
@@ -81,7 +74,7 @@ class SteeringMechanism:
         self._target_angle = target_angle
 
     def execute(self):
-        error_in_degrees = compute_error(
+        error_in_degrees = compute_rotational_error_degrees(
             self._target_angle, self.get_absolute_encoder_position()
         )
         scaled_error = error_in_degrees / 90.0
