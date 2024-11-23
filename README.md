@@ -1,3 +1,35 @@
+# Getting Started
+
+Install python 3.12: https://www.python.org/downloads/release/python-3127/
+
+In a terminal from this repository's folder, run the following commands:
+
+```
+pip install robotpy
+```
+
+```
+python -m robotpy init
+```
+
+```
+python -m robotpy sync
+```
+
+Now everything should be installed and ready to go. You can verify this by running the automated tests:
+
+```
+python -m robotpy test
+```
+
+## Running in the simulator
+
+```
+python -m robotpy sim
+```
+
+# Archive / notes
+
 Following instructions here
 https://docs.wpilib.org/en/stable/docs/zero-to-robot/step-2/python-setup.html
 
