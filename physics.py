@@ -58,7 +58,10 @@ class PhysicsEngine:
             tuple((module.get_target_swerve_state() for module in self.swerve_modules))
         )
 
-        # Update the yaw of the robot based on the rotation of the robot
-        self.imu_yaw.set(self.imu_yaw.get() - math.degrees(speeds.omega * tm_diff))
+        updated_pose = self.physics_controller.drive(speeds, tm_diff)
 
-        self.physics_controller.drive(speeds, tm_diff)
+        # Update the gyro simulation
+        # -> FRC gyros like NavX are positive clockwise, but
+        #    the returned pose is positive counter-clockwise
+        # print("Setting yaw to ", -updated_pose.rotation().degrees())
+        self.imu_yaw.set(-updated_pose.rotation().degrees())

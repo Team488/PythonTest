@@ -3,7 +3,7 @@ import wpilib
 import wpilib.drive
 import magicbot
 
-from wpimath.geometry import Translation2d
+from wpimath.geometry import Translation2d, Rotation2d
 
 from components.swerve.drive import Drive
 from components.swerve.swerve_module import SwerveModule, SwerveModuleConfig
@@ -68,7 +68,16 @@ class MyRobot(magicbot.MagicRobot):
     def teleopPeriodic(self):
         # drive robot with joysticks
         #self.drive.robot_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())
-        self.drive.field_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())  
+        self.drive.field_relative_drive(
+            -self.drive_controller.getLeftY(),
+            -self.drive_controller.getLeftX(), 
+            # Make a field oriented vector from the right joystick
+            Translation2d(
+                -self.drive_controller.getRightX(),
+                self.drive_controller.getRightY()
+            ).rotateBy(Rotation2d.fromDegrees(90))
+        )
+        
         if self.drive_controller.getStartButtonPressed():
             self.drive.reset_heading()
         

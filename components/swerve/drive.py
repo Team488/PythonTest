@@ -1,3 +1,4 @@
+import math
 import magicbot
 import navx
 import ntcore
@@ -9,7 +10,7 @@ from wpimath.kinematics import (
     SwerveModuleState,
     SwerveModulePosition,
 )
-from wpimath.geometry import Rotation2d, Pose2d
+from wpimath.geometry import Rotation2d, Pose2d, Translation2d
 from wpimath.estimator import SwerveDrive4PoseEstimator
 from wpimath.controller import PIDController
 
@@ -28,6 +29,7 @@ class Drive:
     max_translation_speed = magicbot.tunable(2.0)
     single_module_control = magicbot.tunable(False)
     single_module = magicbot.tunable(0)
+    heading_pid_p = magicbot.tunable(4.0)
 
     def setup(self):
         self.modules = [
@@ -54,10 +56,10 @@ class Drive:
         self.field = wpilib.Field2d()
         self.field_obj = self.field.getObject("fused_pose")
 
-        self.heading_pid = self._pid = PIDController(0.2, 0.0, 0.0)
+        self.heading_pid = self._pid = PIDController(self.heading_pid_p, 0.0, 0.0)
 
-        nt = ntcore.NetworkTableInstance.getDefault().getTable("/components/drive")
-        module_states_table = nt.getSubTable("module_states")
+        self.nt = ntcore.NetworkTableInstance.getDefault().getTable("/components/drive")
+        module_states_table = self.nt.getSubTable("module_states")
         self.setpoints_publisher = module_states_table.getStructArrayTopic(
             "setpoints", SwerveModuleState
         ).publish()
@@ -73,17 +75,18 @@ class Drive:
             rot_speed,
         )
 
-    def field_relative_drive(self, vx: float, vy: float, heading_delta: float) -> None:
+    def field_relative_drive(self, vx: float, vy: float, heading: Translation2d) -> None:
         """Field oriented drive commands"""
-        if abs(heading_delta) > 0.1:
-            self.target_heading += Rotation2d.fromDegrees(heading_delta * 10)
+        if abs(heading) > 0.8:
+            self.target_heading = heading.angle()
+            print(f"Updating target_heading to {self.target_heading}")
         current_heading = self.get_rotation()
         heading_error = compute_rotational_error_degrees(current_heading, self.target_heading)
         # PID to our target heading
-        omega = self.heading_pid.calculate(heading_error)
-
+        omega = -math.radians(self.heading_pid.calculate(heading_error))
+        # print(f"heading_error: {heading_error}, omega: {omega}")
         self.chassis_speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            vx, vy, omega, current_heading
+            vx * self.max_translation_speed, vy * self.max_translation_speed, omega, current_heading
         )
 
     def reset_heading(self):
@@ -127,6 +130,8 @@ class Drive:
     def publish_data(self):
         self.setpoints_publisher.set(self.get_target_swerve_states())
         self.measurements_publisher.set(self.get_current_swerve_states())
+        self.nt.putNumber("currentHeadingDeg", self.get_rotation().degrees())
+        self.nt.putNumber("targetHeadingDeg", self.target_heading.degrees())
 
     def get_pose(self) -> Pose2d:
         """Get the current location of the robot relative to ???"""
