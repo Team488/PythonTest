@@ -1,3 +1,4 @@
+from components.swerve.heading_maintainer import HeadingMaintainer
 import navx
 import wpilib
 import wpilib.drive
@@ -10,6 +11,7 @@ from components.swerve.swerve_module import SwerveModule, SwerveModuleConfig
 
 class MyRobot(magicbot.MagicRobot):
     # Injected components, these will be automatically built by MagicBot
+    heading_maintainer: HeadingMaintainer
     drive: Drive
     front_left_swerve_module: SwerveModule
     front_right_swerve_module: SwerveModule
@@ -68,15 +70,17 @@ class MyRobot(magicbot.MagicRobot):
     def teleopPeriodic(self):
         # drive robot with joysticks
         #self.drive.robot_relative_drive(-self.drive_controller.getLeftY(), -self.drive_controller.getLeftX(),  -self.drive_controller.getRightX())
+        # print("about to call field_relative_drive")
         self.drive.field_relative_drive(
             -self.drive_controller.getLeftY(),
-            -self.drive_controller.getLeftX(), 
-            # Make a field oriented vector from the right joystick
+            -self.drive_controller.getLeftX(),
+        )
+        # print("about to call apply_heading")
+        self.heading_maintainer.apply_heading(# Make a field oriented vector from the right joystick
             Translation2d(
                 -self.drive_controller.getRightX(),
                 self.drive_controller.getRightY()
-            ).rotateBy(Rotation2d.fromDegrees(90))
-        )
+            ).rotateBy(Rotation2d.fromDegrees(90)))
         
         if self.drive_controller.getStartButtonPressed():
             self.drive.reset_heading()

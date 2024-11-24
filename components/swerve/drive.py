@@ -29,7 +29,6 @@ class Drive:
     max_translation_speed = magicbot.tunable(2.0)
     single_module_control = magicbot.tunable(False)
     single_module = magicbot.tunable(0)
-    heading_pid_p = magicbot.tunable(4.0)
 
     def setup(self):
         self.modules = [
@@ -43,7 +42,6 @@ class Drive:
         )
         # TODO: set initial pose from a setting based on red vs blue
         initial_pose = Pose2d(0, 0, Rotation2d(0))
-        self.target_heading = self.imu.getRotation2d()
         self.estimator = SwerveDrive4PoseEstimator(
             self.kinematics,
             self.imu.getRotation2d(),
@@ -55,8 +53,6 @@ class Drive:
         )
         self.field = wpilib.Field2d()
         self.field_obj = self.field.getObject("fused_pose")
-
-        self.heading_pid = self._pid = PIDController(self.heading_pid_p, 0.0, 0.0)
 
         self.nt = ntcore.NetworkTableInstance.getDefault().getTable("/components/drive")
         module_states_table = self.nt.getSubTable("module_states")
@@ -75,22 +71,22 @@ class Drive:
             rot_speed,
         )
 
-    def field_relative_drive(self, vx: float, vy: float, heading: Translation2d) -> None:
+    def field_relative_drive(self, vx: float, vy: float) -> None:
         """Field oriented drive commands"""
-        if abs(heading) > 0.8:
-            self.target_heading = heading.angle()
-            print(f"Updating target_heading to {self.target_heading}")
-        current_heading = self.get_rotation()
-        heading_error = compute_rotational_error_degrees(current_heading, self.target_heading)
-        # PID to our target heading
-        omega = -math.radians(self.heading_pid.calculate(heading_error))
+        # TODO: all these values, are they field or player relative? Make it explicit 
+        # and handle the flipping here or in the caller
+        
         # print(f"heading_error: {heading_error}, omega: {omega}")
+        current_heading = self.get_rotation()
         self.chassis_speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-            vx * self.max_translation_speed, vy * self.max_translation_speed, omega, current_heading
+            vx * self.max_translation_speed, vy * self.max_translation_speed, 0, current_heading
         )
 
     def reset_heading(self):
         self.imu.zeroYaw()
+
+    def set_rotation(self, omega: float):
+        self.chassis_speeds.omega = omega
 
     def stop(self):
         self.chassis_speeds = ChassisSpeeds(0, 0, 0)
@@ -131,7 +127,6 @@ class Drive:
         self.setpoints_publisher.set(self.get_target_swerve_states())
         self.measurements_publisher.set(self.get_current_swerve_states())
         self.nt.putNumber("currentHeadingDeg", self.get_rotation().degrees())
-        self.nt.putNumber("targetHeadingDeg", self.target_heading.degrees())
 
     def get_pose(self) -> Pose2d:
         """Get the current location of the robot relative to ???"""
